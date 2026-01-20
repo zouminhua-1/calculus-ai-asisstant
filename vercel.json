@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/vercelapi/:path*",
+      "destination": "https://api.dify.ai/v1/:path*"
+    }
+  ]
+}

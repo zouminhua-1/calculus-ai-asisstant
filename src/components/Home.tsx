@@ -1,22 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { DeepChat } from 'deep-chat-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Menu, Plus, X, Loader2 } from 'lucide-react';
+import React, { useEffect, useRef, useState } from "react";
+import { DeepChat } from "deep-chat-react";
+import { motion, AnimatePresence } from "motion/react";
+import { Menu, Plus, X, Loader2 } from "lucide-react";
 
-import doctor from '@/assets/doctor.png';
-import robot from '@/assets/robot.png';
-import { introPanelHtml } from './data';
+import doctor from "@/assets/doctor.png";
+import robot from "@/assets/robot.png";
+import { introPanelHtml } from "./data";
 
-import HistoryItem from './HistoryItem';
-import EmptyHistoryState from './EmptyHistoryState';
+import HistoryItem from "./HistoryItem";
+import EmptyHistoryState from "./EmptyHistoryState";
 
 const DIFY_API_KEY = import.meta.env.VITE_DIFY_API_KEY;
-const LOGIN_USER = 'deep-chat-user';
+const LOGIN_USER = "deep-chat-user";
+const PROXY_PREFIX = import.meta.env.VITE_API_PROXY_PREFIX;
 
+console.log("Using API Proxy Prefix:", PROXY_PREFIX);
 const Home: React.FC = () => {
   const chatRef = useRef<any>(null);
-  const conversationIdRef = useRef<string>('');
-  const [activeId, setActiveId] = useState<string>('');
+  const conversationIdRef = useRef<string>("");
+  const [activeId, setActiveId] = useState<string>("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [historyList, setHistoryList] = useState<any[]>([]);
@@ -29,15 +31,15 @@ const Home: React.FC = () => {
     try {
       setIsListLoading(true);
       const res = await fetch(
-        `/cros/conversations?user=${LOGIN_USER}&limit=20`,
+        `${PROXY_PREFIX}/conversations?user=${LOGIN_USER}&limit=20`,
         {
           headers: { Authorization: `Bearer ${DIFY_API_KEY}` },
-        }
+        },
       );
       const data = await res.json();
       setHistoryList(data.data || []);
     } catch (e) {
-      console.error('获取历史失败', e);
+      console.error("获取历史失败", e);
     } finally {
       setIsListLoading(false);
     }
@@ -52,20 +54,20 @@ const Home: React.FC = () => {
     conversationIdRef.current = convId;
     try {
       const res = await fetch(
-        `/cros/messages?user=${LOGIN_USER}&conversation_id=${convId}`,
+        `${PROXY_PREFIX}/messages?user=${LOGIN_USER}&conversation_id=${convId}`,
         {
           headers: { Authorization: `Bearer ${DIFY_API_KEY}` },
-        }
+        },
       );
       const data = await res.json();
 
       const formattedMessages = data.data.reverse().flatMap((m: any) => [
-        { role: 'user', text: m.query },
-        { role: 'ai', text: m.answer },
+        { role: "user", text: m.query },
+        { role: "ai", text: m.answer },
       ]);
       setChatHistory(formattedMessages);
     } catch (e) {
-      console.error('加载消息失败', e);
+      console.error("加载消息失败", e);
     } finally {
       setIsMessageLoading(false); // 结束加载
     }
@@ -73,8 +75,8 @@ const Home: React.FC = () => {
 
   // 开启新对话
   const startNewChat = () => {
-    conversationIdRef.current = '';
-    setActiveId('');
+    conversationIdRef.current = "";
+    setActiveId("");
     setChatHistory([]); // 清空历史，触发组件重置
     setIsDrawerOpen(false);
   };
@@ -82,13 +84,13 @@ const Home: React.FC = () => {
   // 3. 新增：删除会话功能
   const deleteConversation = async (e: React.MouseEvent, convId: string) => {
     e.stopPropagation(); // 阻止触发 loadConversation
-    if (!confirm('确定要删除这段对话吗？')) return;
+    if (!confirm("确定要删除这段对话吗？")) return;
 
     try {
-      const res = await fetch(`/cros/conversations/${convId}`, {
-        method: 'DELETE',
+      const res = await fetch(`${PROXY_PREFIX}/conversations/${convId}`, {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${DIFY_API_KEY}`,
         },
         body: JSON.stringify({ user: LOGIN_USER }),
@@ -103,7 +105,7 @@ const Home: React.FC = () => {
         }
       }
     } catch (e) {
-      console.error('删除失败', e);
+      console.error("删除失败", e);
     }
   };
 
@@ -112,21 +114,21 @@ const Home: React.FC = () => {
    */
   const requestHandler = async (body: any, signals) => {
     const { onResponse, onClose } = signals;
-    console.log('RequestHandler Body:', body);
+    console.log("RequestHandler Body:", body);
 
     try {
-      let userText = '';
+      let userText = "";
       let userFiles: File[] = [];
       if (body instanceof FormData) {
         // 1. 获取文字：Deep Chat 默认将消息放在 'message1', 'message2' 等 key 中，或者 'messages' 字符串
         // 获取用户最后输入的文字
-        const message = body.get('message1') as unknown as {
+        const message = body.get("message1") as unknown as {
           role: string;
           text: string;
         };
-        userText = message?.text || '';
+        userText = message?.text || "";
         // 2. 获取文件：Deep Chat 默认将文件放入 'files' 字段
-        const filesFromForm = body.getAll('files') as File[];
+        const filesFromForm = body.getAll("files") as File[];
         userFiles = filesFromForm;
       } else {
         // 保持原有的 JSON 解析逻辑
@@ -136,55 +138,55 @@ const Home: React.FC = () => {
         }
       }
 
-      let uploadedFileId = '';
+      let uploadedFileId = "";
       // 1. 文件上传处理
       if (userFiles && userFiles.length > 0) {
         const fileItem = userFiles[0];
 
         const formData = new FormData();
         // Dify 上传接口要求必须包含 file 和 user
-        formData.append('file', fileItem, fileItem.name || 'image.png');
-        formData.append('user', LOGIN_USER);
+        formData.append("file", fileItem, fileItem.name || "image.png");
+        formData.append("user", LOGIN_USER);
 
-        const uploadRes = await fetch(`/cros/files/upload`, {
-          method: 'POST',
+        const uploadRes = await fetch(`${PROXY_PREFIX}/files/upload`, {
+          method: "POST",
           headers: { Authorization: `Bearer ${DIFY_API_KEY}` },
           body: formData,
         });
 
-        if (!uploadRes.ok) throw new Error('文件上传至 Dify 失败');
+        if (!uploadRes.ok) throw new Error("文件上传至 Dify 失败");
         const uploadData = await uploadRes.json();
         uploadedFileId = uploadData.id;
       }
 
       const payload: Record<string, any> = {
         inputs: {},
-        query: userText || '请分析这张图片',
+        query: userText || "请分析这张图片",
         user: LOGIN_USER,
-        response_mode: 'streaming',
+        response_mode: "streaming",
         conversation_id: conversationIdRef.current || undefined,
       };
-      console.log('uploadedFileId:', uploadedFileId);
+      console.log("uploadedFileId:", uploadedFileId);
 
       if (uploadedFileId) {
         payload.files = [
           {
-            type: 'image',
-            transfer_method: 'local_file',
+            type: "image",
+            transfer_method: "local_file",
             upload_file_id: uploadedFileId,
           },
         ];
       }
       const params = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${DIFY_API_KEY}`,
         },
         body: JSON.stringify(payload),
       };
       // 2. 调用 Dify 聊天接口
-      const chatResponse = await fetch(`/cros/chat-messages`, params);
+      const chatResponse = await fetch(`${PROXY_PREFIX}/chat-messages`, params);
 
       if (!chatResponse.ok) {
         const errorText = await chatResponse.text();
@@ -194,7 +196,7 @@ const Home: React.FC = () => {
       // 3. 健壮的流式数据解析逻辑
       const reader = chatResponse.body?.getReader();
       const decoder = new TextDecoder();
-      let buffer = ''; // 缓冲区：处理被截断的 JSON 字符串
+      let buffer = ""; // 缓冲区：处理被截断的 JSON 字符串
 
       if (!reader) return;
 
@@ -206,46 +208,46 @@ const Home: React.FC = () => {
         buffer += decoder.decode(value, { stream: true });
 
         // 按行切割数据块
-        const lines = buffer.split('\n');
+        const lines = buffer.split("\n");
 
         // 关键：保留最后一行（可能不完整），剩下的行进行解析
-        buffer = lines.pop() || '';
+        buffer = lines.pop() || "";
 
         for (const line of lines) {
           const trimmedLine = line.trim();
-          if (!trimmedLine || !trimmedLine.startsWith('data:')) continue;
+          if (!trimmedLine || !trimmedLine.startsWith("data:")) continue;
 
           try {
             // 提取 data: 之后的 JSON 内容
             const data = JSON.parse(trimmedLine.substring(5));
 
-            console.log('Dify Stream Data:', data);
+            console.log("Dify Stream Data:", data);
 
             if (data.conversation_id && !conversationIdRef.current) {
               conversationIdRef.current = data.conversation_id;
-              console.log('已捕获并保存会话 ID:', data.conversation_id);
+              console.log("已捕获并保存会话 ID:", data.conversation_id);
             }
 
-            if (data.event === 'message' || data.event === 'agent_message') {
+            if (data.event === "message" || data.event === "agent_message") {
               // 实时推送文本给 Deep Chat UI
               onResponse({ text: data.answer, overwrite: false });
-            } else if (data.event === 'error') {
+            } else if (data.event === "error") {
               const finalAnswer =
-                data.data?.outputs?.answer || data.metadata?.usage ? '' : null;
+                data.data?.outputs?.answer || data.metadata?.usage ? "" : null;
               if (finalAnswer) {
                 onResponse({ text: finalAnswer, overwrite: false });
               }
             }
           } catch (e) {
             // 如果解析失败，说明这行可能不完整，放回缓冲区等下一块
-            console.warn('解析行失败，跳过:', trimmedLine);
+            console.warn("解析行失败，跳过:", trimmedLine);
           }
         }
       }
-      console.log('Dify Stream Ended');
+      console.log("Dify Stream Ended");
     } catch (e: any) {
-      console.error('RequestHandler Error:', e);
-      onResponse({ error: e.message || '连接 Dify 出错，请稍后再试' });
+      console.error("RequestHandler Error:", e);
+      onResponse({ error: e.message || "连接 Dify 出错，请稍后再试" });
     } finally {
       // 关闭流
       onClose();
@@ -359,7 +361,7 @@ const Home: React.FC = () => {
             images={{
               files: {
                 maxNumberOfFiles: 1,
-                acceptedFormats: '.png,.jpg,.jpeg',
+                acceptedFormats: ".png,.jpg,.jpeg",
               },
             }}
             introMessage={{
@@ -368,45 +370,45 @@ const Home: React.FC = () => {
             avatars={{
               user: {
                 src: doctor,
-                styles: { container: { width: '35px', height: '35px' } },
+                styles: { container: { width: "35px", height: "35px" } },
               },
               ai: {
                 src: robot,
-                styles: { container: { width: '35px', height: '35px' } },
+                styles: { container: { width: "35px", height: "35px" } },
               },
             }}
             connect={{ handler: requestHandler, stream: true }}
             style={{
-              height: '90vh',
-              width: '100vw',
-              border: 'none',
-              backgroundColor: 'transparent',
+              height: "90vh",
+              width: "100vw",
+              border: "none",
+              backgroundColor: "transparent",
             }}
             messageStyles={{
               default: {
                 user: {
                   bubble: {
-                    backgroundColor: '#2563eb',
-                    color: 'white',
-                    borderRadius: '20px 20px 4px 20px',
-                    padding: '12px 16px',
-                    fontSize: '15px',
+                    backgroundColor: "#2563eb",
+                    color: "white",
+                    borderRadius: "20px 20px 4px 20px",
+                    padding: "12px 16px",
+                    fontSize: "15px",
                   },
                 },
                 ai: {
                   bubble: {
-                    backgroundColor: '#f1f5f9',
-                    color: '#1e293b',
-                    borderRadius: '20px 20px 20px 4px',
-                    padding: '12px 16px',
-                    fontSize: '15px',
-                    maxWidth: '90%',
+                    backgroundColor: "#f1f5f9",
+                    color: "#1e293b",
+                    borderRadius: "20px 20px 20px 4px",
+                    padding: "12px 16px",
+                    fontSize: "15px",
+                    maxWidth: "90%",
                   },
                 },
               },
             }}
             textInput={{
-              placeholder: { text: '输入问题或发送图片...' },
+              placeholder: { text: "输入问题或发送图片..." },
             }}
           />
         </main>
