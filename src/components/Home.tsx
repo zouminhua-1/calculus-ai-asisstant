@@ -13,8 +13,6 @@ import EmptyHistoryState from "./EmptyHistoryState";
 const DIFY_API_KEY = import.meta.env.VITE_DIFY_API_KEY;
 const LOGIN_USER = "deep-chat-user";
 const PROXY_PREFIX = import.meta.env.VITE_API_PROXY_PREFIX;
-
-console.log("Using API Proxy Prefix:", PROXY_PREFIX);
 const Home: React.FC = () => {
   const chatRef = useRef<any>(null);
   const conversationIdRef = useRef<string>("");
@@ -358,7 +356,22 @@ const Home: React.FC = () => {
           <DeepChat
             ref={chatRef}
             history={chatHistory}
+            className="d-chat"
+            submitButtonStyles={{
+              submit: {
+                container: { default: { width: "30px", height: "30px" } },
+                svg: { styles: { default: { width: "26px", height: "26px" } } },
+              },
+            }}
             images={{
+              button: {
+                styles: {
+                  container: { default: { width: "32px", height: "32px" } },
+                  svg: {
+                    styles: { default: { width: "30px", height: "30px" } },
+                  },
+                },
+              },
               files: {
                 maxNumberOfFiles: 1,
                 acceptedFormats: ".png,.jpg,.jpeg",
@@ -409,6 +422,14 @@ const Home: React.FC = () => {
             }}
             textInput={{
               placeholder: { text: "输入问题或发送图片..." },
+              styles: {
+                container: {
+                  minHeight: "40px",
+                },
+                text: {
+                  padding: "10px 6px",
+                },
+              },
             }}
           />
         </main>
