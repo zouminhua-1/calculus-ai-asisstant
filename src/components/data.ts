@@ -23,10 +23,10 @@ export const introPanelHtml = `
         </svg>
       </div>
       <h3 style="margin: 0; color: #1a1a1a; font-size: 1.2rem; font-weight: 700; text-align: center;">
-        AI 影像分析助手
+        结石 AI 分析助手
       </h3>
       <p style="margin: 4px 0 0 0; color: #8c8c8c; font-size: 12px; text-align: center; letter-spacing: 0.5px;">
-        MEDICAL AI ANALYST
+        MEDICAL STONE ANALYSIS · AI-POWERED INSIGHTS
       </p>
     </div>
 
@@ -36,23 +36,14 @@ export const introPanelHtml = `
       padding: 16px;
       text-align: left;
     ">
-      <div style="display: flex; align-items: flex-start; margin-bottom: 12px;">
-        <span style="background: #1677ff; color: white; width: 20px; height: 20px; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0; margin-top: 2px;">1</span>
-        <p style="margin: 0; color: #434343; font-size: 14px; line-height: 1.5;">
-          点击下方 图片按钮
-        </p>
-      </div>
-      <div style="display: flex; align-items: flex-start; margin-bottom: 12px;">
-        <span style="background: #1677ff; color: white; width: 20px; height: 20px; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0; margin-top: 2px;">2</span>
-        <p style="margin: 0; color: #434343; font-size: 14px; line-height: 1.5;">
-          上传您的 <b>超声/CT 检查报告</b> 照片
-        </p>
-      </div>
+      <p style="margin: 0; color: #434343; font-size: 14px; line-height: 1.5;">
+        上传泌尿系或胆道影像（如 CT、超声），AI 将自动识别结石位置、大小及密度，提供初步分析参考。
+      </p>
     </div>
 
     <div style="margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 6px;">
       <span style="width: 6px; height: 6px; background: #52c41a; border-radius: 50%;"></span>
-      <span style="color: #8c8c8c; font-size: 11px;">隐私加密处理 · 结果仅供参考</span>
+      <span style="color: #8c8c8c; font-size: 11px;">隐私加密处理 · 本结果不替代医生诊断</span>
     </div>
   </div>
 `;

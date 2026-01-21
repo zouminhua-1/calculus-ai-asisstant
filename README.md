@@ -2,7 +2,7 @@
 
 > 利用 **Dify 工作流** 与 **多模态 AI 模型**，自动分析用户上传的结石显微图像，智能判断结石类型（如草酸钙、尿酸、磷酸铵镁等），为临床辅助诊断提供参考。
 
-![StoneChat Preview](https://via.placeholder.com/800x400?text=StoneChat+UI+Preview)
+![示例截图](/public/images/应用.png)
 
 ---
 
@@ -17,15 +17,15 @@
 
 ## 🛠 技术栈
 
-| 类别          | 技术                                                           |
-| ------------- | -------------------------------------------------------------- |
-| **框架**      | React 19 + TypeScript                                          |
-| **构建工具**  | Vite 7                                                         |
-| **UI 组件库** | DeepChat + Lucide React 图标                                   |
-| **样式方案**  | Tailwind CSS v4 + PostCSS                                      |
-| **图像处理**  | Dify 工作流（内置多模态模型）                                  |
-| **路由管理**  | React Router v7                                                |
-| **辅助工具**  | UUID（会话 ID）、Axios（备用 API）、React Markdown（结果渲染） |
+| 类别          | 技术                                                |
+| ------------- | --------------------------------------------------- |
+| **框架**      | React 19 + TypeScript                               |
+| **构建工具**  | Vite 7                                              |
+| **UI 组件库** | DeepChat + Lucide React 图标                        |
+| **样式方案**  | Tailwind CSS v4 + PostCSS                           |
+| **图像处理**  | Dify 工作流（内置多模态模型）                       |
+| **路由管理**  | React Router v7                                     |
+| **辅助工具**  | motion、supabase、Axios、React Markdown（结果渲染） |
 
 ---
 
