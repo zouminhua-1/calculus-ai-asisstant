@@ -7,11 +7,12 @@ const DIFY_API_KEY = import.meta.env.VITE_DIFY_API_KEY;
 interface UseConversationReturn {
   chatHistory: any[];
   activeId: string;
+  setActiveId: (id: string) => void;
   isMessageLoading: boolean;
   conversationIdRef: React.MutableRefObject<string>;
   loadConversation: (convId: string) => Promise<void>;
   startNewChat: () => void;
-  deleteConversation: (e: React.MouseEvent, convId: string) => Promise<void>;
+  deleteConversation: (convId: string, callback?: () => void) => Promise<void>;
 }
 
 export const useConversation = (): UseConversationReturn => {
@@ -56,10 +57,7 @@ export const useConversation = (): UseConversationReturn => {
     setChatHistory([]);
   };
 
-  const deleteConversation = async (e: React.MouseEvent, convId: string) => {
-    e.stopPropagation();
-    if (!confirm("确定要删除这段对话吗？")) return;
-
+  const deleteConversation = async (convId: string, callback?: () => void) => {
     try {
       const res = await fetch(`${PROXY_PREFIX}/conversations/${convId}`, {
         method: "DELETE",
@@ -74,6 +72,7 @@ export const useConversation = (): UseConversationReturn => {
         if (activeId === convId) {
           startNewChat();
         }
+        callback?.();
       }
     } catch (e) {
       console.error("删除失败", e);
@@ -88,5 +87,6 @@ export const useConversation = (): UseConversationReturn => {
     loadConversation,
     startNewChat,
     deleteConversation,
+    setActiveId,
   };
 };

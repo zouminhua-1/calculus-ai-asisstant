@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+
 import { useChatHistory } from "@/hooks/useChatHistory";
 import { useConversation } from "@/hooks/useConversation";
 import { ChatHeader } from "@/components/ChatHeader";
@@ -6,6 +7,7 @@ import { ChatArea } from "@/components/ChatArea";
 import { HistoryDrawer } from "@/components/HistoryDrawer";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { DEFAULT_CHAT_USER } from "@/common/constant";
+import { confirm } from "@/ui/confirm";
 
 const DIFY_API_KEY = import.meta.env.VITE_DIFY_API_KEY;
 const PROXY_PREFIX = import.meta.env.VITE_API_PROXY_PREFIX;
@@ -16,9 +18,11 @@ const Home: React.FC = () => {
   const LOGIN_USER = user?.user_name || DEFAULT_CHAT_USER;
   console.log("LOGIN_USER:", LOGIN_USER);
   const { historyList, isListLoading, fetchHistoryList } = useChatHistory();
+  console.log("HistoryList:", historyList);
   const {
     chatHistory,
     activeId,
+    setActiveId,
     isMessageLoading,
     conversationIdRef,
     loadConversation,
@@ -27,6 +31,10 @@ const Home: React.FC = () => {
   } = useConversation();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    fetchHistoryList();
+  }, []);
 
   /**
    * 核心逻辑：拦截 Deep Chat 请求并转换为 Dify 接口调用
@@ -174,31 +182,60 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex h-[100dvh] w-full bg-white overflow-hidden text-slate-900 transition-colors">
-      <HistoryDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        historyList={historyList}
-        isLoading={isListLoading}
-        activeId={activeId}
-        onFetchHistory={fetchHistoryList}
-        onSelect={loadConversation}
-        onDelete={deleteConversation}
-        onNewChat={startNewChat}
-      />
-      <div className="flex-1 flex flex-col w-full relative">
-        <ChatHeader
-          onMenuClick={() => setIsDrawerOpen(true)}
-          onNewChat={startNewChat}
+    <>
+      <div className="flex h-[100dvh] w-full bg-white overflow-hidden text-slate-900 transition-colors">
+        <HistoryDrawer
+          isOpen={isDrawerOpen}
+          onClose={() => {
+            setIsDrawerOpen(false);
+            fetchHistoryList();
+          }}
+          historyList={historyList}
+          isLoading={isListLoading}
+          activeId={activeId}
+          onFetchHistory={fetchHistoryList}
+          onSelect={loadConversation}
+          onDelete={async (e, id) => {
+            e.stopPropagation();
+            const ok = await confirm({
+              title: "删除确认",
+              message: "确认删除该记录？",
+              confirmText: "删除",
+              cancelText: "取消",
+              danger: true,
+            });
+            if (ok) {
+              deleteConversation(id, () => {
+                if (activeId === id) {
+                  startNewChat();
+                  setActiveId("");
+                }
+                fetchHistoryList();
+              });
+            }
+          }}
+          onNewChat={() => {
+            setIsDrawerOpen(false);
+            startNewChat();
+          }}
         />
-        <ChatArea
-          ref={chatRef}
-          history={chatHistory}
-          isMessageLoading={isMessageLoading}
-          requestHandler={requestHandler}
-        />
+        <div className="flex-1 flex flex-col w-full relative">
+          <ChatHeader
+            onMenuClick={() => {
+              setIsDrawerOpen(true);
+            }}
+            onNewChat={startNewChat}
+          />
+
+          <ChatArea
+            ref={chatRef}
+            history={chatHistory}
+            isMessageLoading={isMessageLoading}
+            requestHandler={requestHandler}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
