@@ -9,8 +9,8 @@ import { LOGIN_USER } from "@/common/constant";
 
 const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [name, setName] = useState("doctor1");
-  const [password, setPassword] = useState("@test1234");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const onSubmit = async () => {
