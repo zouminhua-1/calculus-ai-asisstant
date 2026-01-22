@@ -1,23 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect } from "react";
 import {
   User,
-  Mail,
   Lock,
   Phone,
   ShieldCheck,
   ChevronLeft,
   SendHorizontal,
-} from 'lucide-react';
+} from "lucide-react";
+import { useNavigate } from "react-router";
 
-const RegisterPage = ({ onBack }) => {
+const RegisterPage: React.FC = () => {
   const [countdown, setCountdown] = useState(0);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    code: '',
-    password: '',
-  });
+  const navigate = useNavigate();
 
   // 验证码倒计时逻辑
   useEffect(() => {
@@ -39,7 +33,7 @@ const RegisterPage = ({ onBack }) => {
       {/* 顶部返回按钮 */}
       <nav className="mb-8">
         <button
-          onClick={onBack}
+          onClick={() => navigate(-1)}
           className="p-2 -ml-2 text-slate-400 active:text-blue-600 transition-colors flex items-center gap-1"
         >
           <ChevronLeft size={20} />
@@ -118,11 +112,11 @@ const RegisterPage = ({ onBack }) => {
                 disabled={countdown > 0}
                 className={`px-4 rounded-2xl text-xs font-bold transition-all whitespace-nowrap ${
                   countdown > 0
-                    ? 'bg-slate-100 text-slate-400'
-                    : 'bg-blue-50 text-blue-600 active:bg-blue-100'
+                    ? "bg-slate-100 text-slate-400"
+                    : "bg-blue-50 text-blue-600 active:bg-blue-100"
                 }`}
               >
-                {countdown > 0 ? `${countdown}s 后重发` : '获取验证码'}
+                {countdown > 0 ? `${countdown}s 后重发` : "获取验证码"}
               </button>
             </div>
           </div>
@@ -155,7 +149,7 @@ const RegisterPage = ({ onBack }) => {
         {/* 用户协议 */}
         <p className="mt-6 text-center text-[11px] text-slate-400 leading-relaxed px-4">
           点击“完成注册”即代表您同意我们的 <br />
-          <span className="text-blue-500 font-medium">服务协议</span> 与{' '}
+          <span className="text-blue-500 font-medium">服务协议</span> 与{" "}
           <span className="text-blue-500 font-medium">隐私条款</span>
         </p>
       </div>

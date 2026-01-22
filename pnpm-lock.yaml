@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@analytics/storage-utils':
+        specifier: ^0.4.4
+        version: 0.4.4
       '@supabase/supabase-js':
         specifier: ^2.90.1
         version: 2.90.1
@@ -50,6 +53,9 @@ importers:
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
+      sonner:
+        specifier: ^2.0.7
+        version: 2.0.7(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       tailwindcss:
         specifier: ^4.1.11
         version: 4.1.11
@@ -109,6 +115,24 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@analytics/cookie-utils@0.2.14':
+    resolution: {integrity: sha512-x51x2cLqvP5Fb1ydgNvTCX+SVv0ALK/yTNwp/53++yk4kLhxb850krWtQ4aASN0612oXrIGotwfmdJIttnLiPQ==}
+
+  '@analytics/global-storage-utils@0.1.9':
+    resolution: {integrity: sha512-+xm6CDnWsVOQIKkqbPRPRdYDXKk3PNgr/bCZWSI+7tEDT5PCDgI0QSBZe+FqCVkCRtTkgOrjFOY7wOM8Gq+ndA==}
+
+  '@analytics/localstorage-utils@0.1.12':
+    resolution: {integrity: sha512-BL3vuZUwWgMqdkQsE0GKsED5SPLC6daI4K4LE0a/BkKv+4Cae5JLLqpO5gju2HUGOjJxIvw8U/G5EcglNY5+1w==}
+
+  '@analytics/session-storage-utils@0.0.9':
+    resolution: {integrity: sha512-fhP9QCpyq45rZKsXaAxyz+VTmOUWljIW08CWSkFzpwOHkDM4Xy5tymc1YcWqSBBaLjHldo3HlY4qfqEIS4Aj1A==}
+
+  '@analytics/storage-utils@0.4.4':
+    resolution: {integrity: sha512-873P4wDIunbOnBqADc2AhTVsLbluUv1dP6k9UrK8FIeV8WXv5+fG12HdwwaniUIxq6QLgZJfKEaCwtWSKrrV0g==}
+
+  '@analytics/type-utils@0.6.4':
+    resolution: {integrity: sha512-Ou1gQxFakOWLcPnbFVsrPb8g1wLLUZYYJXDPjHkG07+5mustGs5yqACx42UAu4A6NszNN6Z5gGxhyH45zPWRxw==}
 
   '@babel/code-frame@7.27.1':
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
@@ -1924,6 +1948,12 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
+  sonner@2.0.7:
+    resolution: {integrity: sha512-W6ZN4p58k8aDKA4XPcx2hpIQXBRAgyiWVkYhT7CvK6D3iAu7xjvVyhQHg2/iaKJZ1XVJ4r7XuwGL+WGEK37i9w==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -2173,6 +2203,32 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.12
       '@jridgewell/trace-mapping': 0.3.29
+
+  '@analytics/cookie-utils@0.2.14':
+    dependencies:
+      '@analytics/global-storage-utils': 0.1.9
+
+  '@analytics/global-storage-utils@0.1.9':
+    dependencies:
+      '@analytics/type-utils': 0.6.4
+
+  '@analytics/localstorage-utils@0.1.12':
+    dependencies:
+      '@analytics/global-storage-utils': 0.1.9
+
+  '@analytics/session-storage-utils@0.0.9':
+    dependencies:
+      '@analytics/global-storage-utils': 0.1.9
+
+  '@analytics/storage-utils@0.4.4':
+    dependencies:
+      '@analytics/cookie-utils': 0.2.14
+      '@analytics/global-storage-utils': 0.1.9
+      '@analytics/localstorage-utils': 0.1.12
+      '@analytics/session-storage-utils': 0.0.9
+      '@analytics/type-utils': 0.6.4
+
+  '@analytics/type-utils@0.6.4': {}
 
   '@babel/code-frame@7.27.1':
     dependencies:
@@ -4111,6 +4167,11 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
+
+  sonner@2.0.7(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+    dependencies:
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
   source-map-js@1.2.1: {}
 

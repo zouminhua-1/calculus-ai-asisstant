@@ -1,32 +1,35 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import {
-  Activity,
-  Mail,
-  Lock,
-  User,
-  ArrowRight,
-  ShieldCheck,
-} from 'lucide-react';
-
-import { getUser } from '@/db';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Activity, Lock, User, ArrowRight, ShieldCheck } from "lucide-react";
+import { setItem } from "@analytics/storage-utils";
+import { useNavigate } from "react-router";
+import { Toaster, toast } from "sonner";
+import { getUser } from "@/db";
+import { LOGIN_USER } from "@/common/constant";
 
 const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [name, setName] = useState('doctor1');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('@test1234');
+  const [name, setName] = useState("doctor1");
+  const [password, setPassword] = useState("@test1234");
+  const navigate = useNavigate();
 
   const onSubmit = async () => {
     if (isLogin) {
-      // 处理登录逻辑
       const { data, error } = await getUser({ name, pwd: password }); // 示例：从数据库获取用户信息
-      console.log('登录数据：', data, error);
+      console.log("登录数据：", data, error);
+      if (!error) {
+        setItem(LOGIN_USER, data, { storage: "sessionStorage" });
+        toast.success("登录成功", { position: "top-center" });
+        navigate({ pathname: "/home" }, { replace: true });
+      } else {
+        toast.error("账号或密码错误");
+      }
     }
   };
 
   return (
     <div className="min-h-[100dvh] w-full bg-[#f8fafc] flex flex-col items-center justify-center p-6">
+      <Toaster richColors={true} />
       {/* 顶部 Logo 区 */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -49,14 +52,14 @@ const AuthPage: React.FC = () => {
       >
         <AnimatePresence mode="wait">
           <motion.div
-            key={isLogin ? 'login' : 'register'}
+            key={isLogin ? "login" : "register"}
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.2 }}
           >
             <h2 className="text-xl font-bold text-slate-800 mb-6">
-              {isLogin ? '欢迎回来' : '创建新账号'}
+              {isLogin ? "欢迎回来" : "创建新账号"}
             </h2>
 
             <div className="space-y-4">
@@ -68,6 +71,7 @@ const AuthPage: React.FC = () => {
                 <input
                   placeholder="账号"
                   value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 transition-all outline-none"
                 />
               </div>
@@ -81,6 +85,7 @@ const AuthPage: React.FC = () => {
                   type="password"
                   placeholder="密码"
                   value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 transition-all outline-none"
                 />
               </div>
@@ -90,7 +95,7 @@ const AuthPage: React.FC = () => {
               onClick={onSubmit}
               className="w-full mt-8 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-200 flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
             >
-              {isLogin ? '立即登录' : '注册账号'}
+              {isLogin ? "立即登录" : "注册账号"}
               <ArrowRight size={18} />
             </button>
           </motion.div>
@@ -102,9 +107,9 @@ const AuthPage: React.FC = () => {
             onClick={() => setIsLogin(!isLogin)}
             className="text-sm text-slate-500 hover:text-blue-600 transition-colors"
           >
-            {isLogin ? '还没有账号？' : '已有账号？'}
+            {isLogin ? "还没有账号？" : "已有账号？"}
             <span className="text-blue-600 font-bold ml-1">
-              {isLogin ? '立即注册' : '登录'}
+              {isLogin ? "立即注册" : "登录"}
             </span>
           </button>
         </div>
